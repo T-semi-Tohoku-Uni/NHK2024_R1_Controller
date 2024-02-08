@@ -29,6 +29,7 @@ $ pip install -r requirements.txt
 
 これで環境のセットアップが完成したので, プログラムを実行する
 ```
+$ cd src
 $ python3 main.py
 ```
 
