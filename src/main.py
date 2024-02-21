@@ -3,19 +3,22 @@ import pygame
 import json
 from typing import Dict
 import multiprocessing
+import math
 
 class ControllerData:
     def __init__(
         self,
-        joy_lx: int,
-        joy_ly: int,
+        v_x: int,
+        v_y: int,
+        omega: int,
         btn_a: int,
         btn_b: int,
         btn_x: int,
         btn_y: int,
     ):
-        self.joy_lx = joy_lx
-        self.joy_ly = joy_ly
+        self.v_x = v_x
+        self.v_y = v_y
+        self.omega = omega
         self.btn_a = btn_a
         self.btn_b = btn_b
         self.btn_x = btn_x
@@ -30,6 +33,26 @@ def map_axis(val):
     out_max = 100
     return int((val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
 
+def validate(input: float):
+    if (-0.3 < input and input < 0) or (0 < input and input < 0.3):
+        return 0
+    else:
+        return input
+
+def speed_x(p_x):
+    v_x = round(p_x, 2) # -1 to 1
+    v_x = validate(v_x) # if -0.3 < v_x < 0.3,  v_x => 0
+    return int((v_x + 1) * (255 / 2))
+
+def speed_y(p_y):
+    v_y = round(-p_y, 2)
+    v_y = validate(v_y) # if -0.3 < v_y < 0.3, v_y => 0
+    return int((v_y + 1) * (255 / 2))
+
+def omega(p_x, p_y):
+    v_x = validate(p_x)
+    v_y = validate(p_y)
+    return int(((math.atan2(v_x, v_y) + math.pi) / (2 * math.pi)) * 255)
 
 def send_udp_message(ip: str, port: int, message: Dict[str, int]):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -38,7 +61,7 @@ def send_udp_message(ip: str, port: int, message: Dict[str, int]):
 
 if __name__ == "__main__":
     #　サーバーの設定
-    host_name: str = "raspberrypi.local"
+    host_name: str = "R2.local"
     port: int = 12345
     
     print("Server Setting")
@@ -52,8 +75,9 @@ if __name__ == "__main__":
     
     # 前回の値（他のボタンの割り込みが起こった時に無視するため）
     last_ctr_data = ControllerData(
-        joy_lx = 0,
-        joy_ly = 0,
+        v_x = 0,
+        v_y = 0,
+        omega = 0,
         btn_a = 0,
         btn_b = 0,
         btn_x = 0,
@@ -63,9 +87,12 @@ if __name__ == "__main__":
     try:
         while True:
             if pygame.event.get():
+                p_x = joystick.get_axis(0)
+                p_y = joystick.get_axis(1)
                 ctr_data = ControllerData(
-                    joy_lx = map_axis(joystick.get_axis(0)),   # 左スティックx座標 (-100 to 100)
-                    joy_ly = -map_axis(joystick.get_axis(1)),  # 左スティックy座標 (-100 to 100)
+                    v_x = speed_x(p_x),   # 左スティックx座標 (-100 to 100)
+                    v_y = speed_y(p_y),  # 左スティックy座標 (-100 to 100)
+                    omega = omega(p_x, p_y),
                     btn_a = joystick.get_button(0),            # Aボタン   (0 or 1)
                     btn_b = joystick.get_button(1),            # Bボタン   (0 or 1)
                     btn_x = joystick.get_button(2),            # Xボタン   (0 or 1)
