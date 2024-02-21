@@ -15,6 +15,9 @@ class ControllerData:
         btn_b: int,
         btn_x: int,
         btn_y: int,
+        btn_lb: int,
+        btn_rb: int,
+        start_btn: int,
     ):
         self.v_x = v_x
         self.v_y = v_y
@@ -23,6 +26,9 @@ class ControllerData:
         self.btn_b = btn_b
         self.btn_x = btn_x
         self.btn_y = btn_y
+        self.btn_lb = btn_lb
+        self.btn_rb = btn_rb
+        self.start_btn = start_btn
 
 # ジョイスティックの出力数値を調整
 def map_axis(val):
@@ -61,7 +67,7 @@ def send_udp_message(ip: str, port: int, message: Dict[str, int]):
 
 if __name__ == "__main__":
     #　サーバーの設定
-    host_name: str = "R2.local"
+    host_name: str = "raspberrypi.local"
     port: int = 12345
     
     print("Server Setting")
@@ -82,6 +88,9 @@ if __name__ == "__main__":
         btn_b = 0,
         btn_x = 0,
         btn_y = 0,
+        btn_lb = 0,
+        btn_rb = 0,
+        start_btn=0,
     )
     
     try:
@@ -97,6 +106,9 @@ if __name__ == "__main__":
                     btn_b = joystick.get_button(1),            # Bボタン   (0 or 1)
                     btn_x = joystick.get_button(2),            # Xボタン   (0 or 1)
                     btn_y = joystick.get_button(3),            # Yボタン   (0 or 1)
+                    btn_lb =  joystick.get_button(4),  
+                    btn_rb = joystick.get_button(5),
+                    start_btn = joystick.get_button(11), # Startボタン (0 or 1)
                 )
                 # 前回の値と比較. 同じだったら通信しない
                 if ctr_data.__dict__ == last_ctr_data.__dict__:

@@ -44,7 +44,7 @@ def main():
                 "joy_rx": map_axis(joystick.get_axis(3)),   # 右スティックx座標 (-100 to 100)
                 "joy_ry": -map_axis(joystick.get_axis(4)),  # 右スティックy座標 (-100 to 100)
                 "joy_lt": map_axis_t(joystick.get_axis(2)), # LT/7 (0 to 100)
-                "joy_rt": map_axis_t(joystick.get_axis(5)), # RT/8 (0 to 100)
+                # "joy_rt": map_axis_t(joystick.get_axis(5)), # RT/8 (0 to 100)
                 "hat_x": joystick.get_hat(0)[0],            # 十時左右  (-1 or 1)
                 "hat_y": joystick.get_hat(0)[1],            # 十時上下  (-1 or 1)
                 "btn_a": joystick.get_button(0),            # Aボタン   (0 or 1)
@@ -57,7 +57,8 @@ def main():
                 "btn_start": joystick.get_button(7),
                 "btn_guide": joystick.get_button(8),
                 "btn_joyl": joystick.get_button(9),         # ない？
-                "btn_joyr": joystick.get_button(10)         # ない?
+                "btn_joyr": joystick.get_button(10),         # ない?
+                "start_btn" : joystick.get_button(11) 
             }
             print(gamepad_data)
 
