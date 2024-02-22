@@ -98,7 +98,7 @@ if __name__ == "__main__":
             if pygame.event.get():
                 p_x = joystick.get_axis(0)
                 p_y = joystick.get_axis(1)
-                o = joystick.get_axis(2)
+                o = joystick.get_axis(3)
                 ctr_data = ControllerData(
                     v_x = speed_x(p_x),   # 左スティックx座標 (-100 to 100)
                     v_y = speed_y(p_y),  # 左スティックy座標 (-100 to 100)
@@ -109,7 +109,7 @@ if __name__ == "__main__":
                     btn_y = joystick.get_button(3),            # Yボタン   (0 or 1)
                     btn_lb =  joystick.get_button(4),  
                     btn_rb = joystick.get_button(5),
-                    start_btn = joystick.get_button(11), # Startボタン (0 or 1)
+                    start_btn = joystick.get_button(10), # Startボタン (0 or 1)
                 )
                 # 前回の値と比較. 同じだったら通信しない
                 if ctr_data.__dict__ == last_ctr_data.__dict__:
