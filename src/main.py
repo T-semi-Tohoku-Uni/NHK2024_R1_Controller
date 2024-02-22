@@ -55,10 +55,10 @@ def speed_y(p_y):
     v_y = validate(v_y) # if -0.3 < v_y < 0.3, v_y => 0
     return int((v_y + 1) * (255 / 2))
 
-def omega(p_x, p_y):
-    v_x = validate(p_x)
-    v_y = validate(p_y)
-    return int(((math.atan2(v_x, v_y) + math.pi) / (2 * math.pi)) * 255)
+def cac_omega(o):
+    o = round(o, 2)
+    o = validate(o)
+    return int((o + 1) * (255 / 2))
 
 def send_udp_message(ip: str, port: int, message: Dict[str, int]):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -98,10 +98,11 @@ if __name__ == "__main__":
             if pygame.event.get():
                 p_x = joystick.get_axis(0)
                 p_y = joystick.get_axis(1)
+                o = joystick.get_axis(2)
                 ctr_data = ControllerData(
                     v_x = speed_x(p_x),   # 左スティックx座標 (-100 to 100)
                     v_y = speed_y(p_y),  # 左スティックy座標 (-100 to 100)
-                    omega = omega(p_x, p_y),
+                    omega = cac_omega(o),
                     btn_a = joystick.get_button(0),            # Aボタン   (0 or 1)
                     btn_b = joystick.get_button(1),            # Bボタン   (0 or 1)
                     btn_x = joystick.get_button(2),            # Xボタン   (0 or 1)
