@@ -67,7 +67,7 @@ def send_udp_message(ip: str, port: int, message: Dict[str, int]):
 
 if __name__ == "__main__":
     #　サーバーの設定
-    host_name: str = "raspberrypi.local"
+    host_name: str = "tsemiR1.local"
     port: int = 12345
     
     print("Server Setting")
