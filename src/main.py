@@ -4,6 +4,10 @@ import json
 from typing import Dict
 import multiprocessing
 import math
+import subprocess
+import platform
+import time
+from multiprocessing import Process
 
 class ControllerData:
     def __init__(
@@ -29,6 +33,19 @@ class ControllerData:
         self.btn_lb = btn_lb
         self.btn_rb = btn_rb
         self.start_btn = start_btn
+
+def send_ping(domain):
+    command_prefix = ["ping", "-c", "1"] if platform.system().lower() == "linux" else ["ping", "-n", "1"]
+    command = command_prefix + [domain]
+    try:
+        while True:
+            output = subprocess.check_output(command, text=True)
+            print(output)
+            time.sleep(1)
+    except subprocess.CalledProcessError as e:
+        print("Pingコマンドの実行に失敗しました:", e)
+    except KeyboardInterrupt:
+        print("Pingプロセスが中断されました")
 
 # ジョイスティックの出力数値を調整
 def map_axis(val):
@@ -69,6 +86,9 @@ if __name__ == "__main__":
     #　サーバーの設定
     host_name: str = "tsemiR1.local"
     port: int = 12345
+    
+    ping_process = Process(target=send_ping, args=(host_name,))
+    ping_process.start()
     
     print("Server Setting")
     print(f"Host Name: {host_name}")
